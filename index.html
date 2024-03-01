@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>ملاحظات الموقع</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        form {
+            margin: 20px auto;
+            width: 500px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ccc;
+        }
+        textarea {
+            height: 100px;
+        }
+        button {
+            margin-top: 10px;
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            background-color: #f7f7f7;
+            cursor: pointer;
+        }
+        #entries {
+            margin-top: 20px;
+            list-style: none;
+            padding: 0;
+        }
+        #entries li {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        #entries li b {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>ملاحظات الموقع</h1>
+    <form id="feedback-form">
+        <label for="name">الاسم:</label>
+        <input type="text" id="name" required>
+        <br>
+        <label for="feedback">الرأي:</label>
+        <textarea id="feedback" required></textarea>
+        <br>
+        <button type="submit">إرسال</button>
+    </form>
+
+    <ul id="entries"></ul>
+
+    <script>
+        // متغير لتخزين جميع الملاحظات
+        const entries = [];
+
+        // دالة لإضافة ملاحظة جديدة
+        function addEntry(name, feedback) {
+            entries.push({ name, feedback });
+            displayEntries();
+        }
+
+        // دالة لعرض جميع الملاحظات
+        function displayEntries() {
+            const entriesList = document.getElementById("entries");
+            entriesList.innerHTML = "";
+
+            entries.forEach((entry) => {
+                const listItem = document.createElement("li");
+                listItem.innerHTML = `<b>${entry.name}:</b> ${entry.feedback}`;
+                entriesList.appendChild(listItem);
+            });
+        }
+
+        // استمع إلى إرسال النموذج
+        document.getElementById("feedback-form").addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            // الحصول على اسم المستخدم وردود الفعل من النموذج
+            const name = document.getElementById("name").value;
+            const feedback = document.getElementById("feedback").value;
+
+            // إضافة الملاحظة الجديدة
+            addEntry(name, feedback);
+
+            // إعادة تعيين النموذج
+            e.target.reset();
+        });
+
+        // تحميل جميع الملاحظات عند تحميل الصفحة
+        (async function loadEntries() {
+            const response = await fetch("https://play.google.com/store/apps/details?id=com.appybuilder.hugogamez28.MemosAPP&hl=ar");
+            const data = await response.json();
+
+            entries.push(...data);
+            displayEntries();
+        })();
+    </script>
+</body>
+</html>
